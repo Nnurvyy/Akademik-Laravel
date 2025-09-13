@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('role')->default('user');
             $table->string('full_name', 100); // string -> varchar(100)
             $table->rememberToken();  // untuk library Breeze
-            $table->timestamp('email_verified_at')->nullable(); // untuk library Breeze
             $table->timestamps();  // untuk library Breeze
         });
     }
