@@ -47,7 +47,7 @@
                         {{-- Password --}}
                         <div>
                             <x-input-label for="password" :value="__('Password')" />
-                            <x-password-input id="password" class="block mt-1 w-full" type="password" name="password" required autofocus autocomplete="new-password" />
+                            <x-password-input id="password" class="block mt-1 w-full" type="password" name="password" autofocus autocomplete="new-password" />
                             <x-input-error class="mt-2" :messages="$errors->get('password')" />
                         </div>
 
