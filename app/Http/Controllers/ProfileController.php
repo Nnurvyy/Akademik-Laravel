@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -26,16 +27,21 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user->username = $request->username;
+        $user->full_name = $request->full_name;
+        $user->email = $request->email;
+        $user->save();
+
+        // redirect sesuai role
+        if($user->role === 'admin'){
+            return redirect()->route('dashboard.admin')->with('status', 'profile-updated');
+        } else {
+            return redirect()->route('dashboard.user')->with('status', 'profile-updated');
         }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
 
     /**
      * Delete the user's account.

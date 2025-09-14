@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     protected $table = 'students';
+
+    public $timestamps = false;
     protected $primaryKey = 'student_id';
     protected $fillable = [
-        'entry_year'
+        'entry_year',
+        'user_id',
     ];
 
     public function user()
@@ -19,6 +22,6 @@ class Student extends Model
 
     public function takes()
     {
-        return $this->hasMany(Take::class, 'user_id', 'student_id');
+        return $this->hasMany(Take::class, 'student_id', 'student_id');
     }
 }

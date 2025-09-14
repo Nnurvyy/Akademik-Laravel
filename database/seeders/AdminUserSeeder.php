@@ -13,6 +13,7 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
+        //Menggunakan Query Builder.
         DB::table('users')->insert([
             'username' => 'admin',
             'full_name' => 'Administrator',

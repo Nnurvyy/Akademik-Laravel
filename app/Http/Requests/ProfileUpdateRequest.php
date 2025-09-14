@@ -14,17 +14,17 @@ class ProfileUpdateRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
-        return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                Rule::unique(User::class)->ignore($this->user()->id),
-            ],
-        ];
-    }
+        {
+            return [
+                'username' => ['required', 'string', 'max:15', Rule::unique('users', 'username')->ignore($this->user()->user_id, 'user_id')],
+                'full_name' => ['required', 'string', 'max:100'],
+                'email' => [
+                    'required',
+                    'string',
+                    'email',
+                    'max:255',
+                    Rule::unique('users', 'email')->ignore($this->user()->user_id, 'user_id'),
+                ],
+            ];
+        }
 }

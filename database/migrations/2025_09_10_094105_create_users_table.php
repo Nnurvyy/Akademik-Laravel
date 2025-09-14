@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id('user_id');
             $table->string('email')->unique();  // untuk Breeze
-            $table->string('username', 15);  // string -> varchar(15)
+            $table->string('username', 15)->unique();  // string -> varchar(15)
             $table->string('password');
             $table->string('role')->default('user');
             $table->string('full_name', 100); // string -> varchar(100)
