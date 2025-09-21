@@ -1,124 +1,46 @@
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{-- ================= STUDENTS ================= --}}
-                    <h3 class="text-xl font-semibold mt-8 mb-2">Students</h3>
-                    <div class="mb-2 flex items-center gap-2">
-                        <a href="{{ route('students.create') }}">
-                            <x-primary-button>Add Student</x-primary-button>
-                        </a>
-                        <form method="GET" action="{{ route('dashboard.admin') }}" class="ml-auto flex gap-2">
-                            <input type="text" name="student_search" value="{{ $studentSearch }}" placeholder="Search students..." class="rounded px-2 py-1 border bg-white text-black focus:ring focus:ring-blue-300" />
-                            <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded">Search</button>
-                        </form>
-                    </div>
 
-                    <div style="min-height: 320px">
-                        <table class="w-full mb-2 border-collapse border border-gray-300 dark:border-gray-700">
-                            <thead class="bg-gray-100 dark:bg-gray-700">
-                                <tr>
-                                    @php
-                                        $studentOrderNext = $studentOrder === 'asc' ? 'desc' : 'asc';
-                                    @endphp
-                                    <th class="border px-2 py-1">
-                                        <a href="{{ route('dashboard.admin', array_merge(request()->except('students'), ['student_sort' => 'username', 'student_order' => $studentSort === 'username' ? $studentOrderNext : 'asc'])) }}">
-                                            Username {!! $studentSort === 'username' ? ($studentOrder === 'asc' ? '▲' : '▼') : '' !!}
-                                        </a>
-                                    </th>
-                                    <th class="border px-2 py-1">
-                                        <a href="{{ route('dashboard.admin', array_merge(request()->except('students'), ['student_sort' => 'full_name', 'student_order' => $studentSort === 'full_name' ? $studentOrderNext : 'asc'])) }}">
-                                            Full Name {!! $studentSort === 'full_name' ? ($studentOrder === 'asc' ? '▲' : '▼') : '' !!}
-                                        </a>
-                                    </th>
-                                    <th class="border px-2 py-1">Email</th>
-                                    <th class="border px-2 py-1">
-                                        <a href="{{ route('dashboard.admin', array_merge(request()->except('students'), ['student_sort' => 'entry_year', 'student_order' => $studentSort === 'entry_year' ? $studentOrderNext : 'asc'])) }}">
-                                            Entry Year {!! $studentSort === 'entry_year' ? ($studentOrder === 'asc' ? '▲' : '▼') : '' !!}
-                                        </a>
-                                    </th>
-                                    <th class="border px-2 py-1">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($students as $student)
-                                <tr>
-                                    <td class="border px-2 py-1">{{ $student->user->username }}</td>
-                                    <td class="border px-2 py-1">{{ $student->user->full_name }}</td>
-                                    <td class="border px-2 py-1">{{ $student->user->email }}</td>
-                                    <td class="border px-2 py-1 text-center">{{ $student->entry_year }}</td>
-                                    <td class="border px-2 py-1 flex justify-center gap-2">
-                                        <a href="{{ route('students.edit', $student) }}">
-                                            <x-secondary-button>Edit</x-secondary-button>
-                                        </a>
-                                        <form action="{{ route('students.destroy', $student) }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-danger-button>Delete</x-danger-button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        {{ $students->links() }}
-                    </div>
-
-                    {{-- ================= COURSES ================= --}}
-                    <h3 class="text-xl font-semibold mt-12 mb-2 ">Courses</h3>
-                    <div class="mb-2 flex items-center gap-2">
-                        <a href="{{ route('courses.create') }}">
-                            <x-primary-button>Add Course</x-primary-button>
-                        </a>
-                        <form method="GET" action="{{ route('dashboard.admin') }}" class="ml-auto flex gap-2">
-                            <input type="text" name="course_search" value="{{ $courseSearch }}" placeholder="Search courses..." class="rounded px-2 py-1 border bg-white text-black focus:ring focus:ring-blue-300" />
-                            <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded">Search</button>
-                        </form>
-                    </div>
-
-                    <table class="w-full mb-2 border-collapse border border-gray-300 dark:border-gray-700">
-                        <thead class="bg-gray-100 dark:bg-gray-700">
-                            <tr>
-                                @php
-                                    $courseOrderNext = $courseOrder === 'asc' ? 'desc' : 'asc';
-                                @endphp
-                                <th class="border px-2 py-1">
-                                    <a href="{{ route('dashboard.admin', array_merge(request()->except('courses'), ['course_sort' => 'course_name', 'course_order' => $courseSort === 'course_name' ? $courseOrderNext : 'asc'])) }}">
-                                        Name {!! $courseSort === 'course_name' ? ($courseOrder === 'asc' ? '▲' : '▼') : '' !!}
-                                    </a>
-                                </th>
-                                <th class="border px-2 py-1">
-                                    <a href="{{ route('dashboard.admin', array_merge(request()->except('courses'), ['course_sort' => 'credits', 'course_order' => $courseSort === 'credits' ? $courseOrderNext : 'asc'])) }}">
-                                        Credits {!! $courseSort === 'credits' ? ($courseOrder === 'asc' ? '▲' : '▼') : '' !!}
-                                    </a>
-                                </th>
-                                <th class="border px-2 py-1">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($courses as $course)
-                            <tr>
-                                <td class="border px-2 py-1">{{ $course->course_name }}</td>
-                                <td class="border px-2 py-1 text-center">{{ $course->credits }}</td>
-                                <td class="border px-2 py-1 flex justify-center gap-2">
-                                    <a href="{{ route('courses.edit', $course) }}">
-                                        <x-secondary-button>Edit</x-secondary-button>
-                                    </a>
-                                    <form action="{{ route('courses.destroy', $course) }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <x-danger-button>Delete</x-danger-button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    {{ $courses->links() }}
-                    
+            <div class="bg-gradient-to-r from-blue-500 to-green-500 rounded-lg shadow-lg p-8 mb-8 text-white text-center">
+                <h2 class="text-2xl font-bold mb-2">Selamat Datang di Dashboard Admin Akademik!</h2>
+                <p class="text-lg">Kelola data mahasiswa dan mata kuliah dengan mudah dan efisien.<br>
+                Gunakan menu navigasi di atas untuk mengakses fitur manajemen data.</p>
+            </div>
+            
+            {{-- STATISTIC BOXES --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex flex-col items-center justify-center">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">{{ $studentCount }}</div>
+                    <div class="text-lg font-semibold text-gray-700 dark:text-gray-200">Total Mahasiswa</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Jumlah seluruh mahasiswa aktif di sistem</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex flex-col items-center justify-center">
+                    <div class="text-4xl font-bold text-green-600 mb-2">{{ $courseCount }}</div>
+                    <div class="text-lg font-semibold text-gray-700 dark:text-gray-200">Total Courses</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Jumlah seluruh mata kuliah yang tersedia</div>
                 </div>
             </div>
+
+            {{-- KONTEN TAMBAHAN --}}
+            
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-2 text-blue-700 dark:text-blue-300">Tips Pengelolaan Data</h3>
+                    <ul class="list-disc list-inside text-gray-600 dark:text-gray-300 text-sm">
+                        <li>Pastikan data mahasiswa selalu terupdate.</li>
+                        <li>Tambah atau edit mata kuliah sesuai kebutuhan kurikulum.</li>
+                        <li>Gunakan fitur pencarian untuk menemukan data dengan cepat.</li>
+                    </ul>
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-2 text-green-700 dark:text-green-300">Statistik Singkat</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm mb-2">Mahasiswa terbanyak mengambil mata kuliah pada semester ganjil.</p>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Pantau perkembangan data secara berkala untuk hasil terbaik.</p>
+                </div>
+            </div>
+
         </div>
     </div>
 </x-app-layout>

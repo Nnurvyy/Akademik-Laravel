@@ -9,6 +9,33 @@ use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
+    public function index(Request $request)
+    {
+        $studentSort = $request->get('student_sort', 'username');
+        $studentOrder = $request->get('student_order', 'asc');
+        $studentSearch = $request->get('student_search');
+
+        $studentsQuery = \App\Models\Student::with('user');
+        if ($studentSearch) {
+            $studentsQuery->whereHas('user', function($q) use ($studentSearch) {
+                $q->where('username', 'like', "%$studentSearch%")
+                ->orWhere('full_name', 'like', "%$studentSearch%")
+                ->orWhere('email', 'like', "%$studentSearch%");
+            })->orWhere('entry_year', 'like', "%$studentSearch%");
+        }
+        if (in_array($studentSort, ['username', 'full_name', 'entry_year'])) {
+            if ($studentSort === 'entry_year') {
+                $studentsQuery->orderBy('entry_year', $studentOrder);
+            } else {
+                $studentsQuery->join('users', 'students.user_id', '=', 'users.user_id')
+                    ->orderBy("users.$studentSort", $studentOrder)
+                    ->select('students.*');
+            }
+        }
+        $students = $studentsQuery->paginate(10)->appends($request->except('page'));
+
+        return view('kelola-mahasiswa', compact('students', 'studentSort', 'studentOrder', 'studentSearch'));
+    }
 
     public function create()
     {
@@ -36,7 +63,7 @@ class StudentController extends Controller
             'user_id' => $user->user_id,
             'entry_year' => $request->entry_year,
         ]);
-        return redirect()->route('dashboard.admin')->with('status', 'student-created');
+        return redirect()->route('students.index')->with('status', 'student-created');
     }
 
     public function edit(Student $student){
@@ -66,13 +93,13 @@ class StudentController extends Controller
         $student->entry_year = $request->entry_year;
         $student->save();
 
-        return redirect()->route('dashboard.admin')->with('status', 'student-updated');
+        return redirect()->route('students.index')->with('status', 'student-updated');
     }
 
     public function destroy(Student $student) {
         // Hapus user (otomatis hapus student karena ada foreign key cascade)
         $student->user->delete();
-        return redirect()->route('dashboard.admin')->with('status', 'student-deleted');
+        return redirect()->route('students.index')->with('status', 'student-deleted');
     }
 
 

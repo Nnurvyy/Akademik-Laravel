@@ -31,32 +31,39 @@ Route::get('/dashboard', function () {
 // middleware role ADMIN
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
-    // dashboard
     Route::get('/dashboard-admin', [DashboardAdminController::class, 'dashboardAdmin'])->name('dashboard.admin');
 
-    // Kelola Courses
-    Route::resource('courses', CourseController::class)->except(['show', 'index']);
-    // Route resource Laravel untuk courses otomatis membuat 7 route standar: 
-        //courses.index (GET /courses → index), courses.create (GET /courses/create → create), courses.store (POST /courses → store), 
-        //courses.show (GET /courses/{course} → show), courses.edit (GET /courses/{course}/edit → edit), 
-        //courses.update (PUT/PATCH /courses/{course} → update), dan courses.destroy (DELETE /courses/{course} → destroy).
-    // Route otomatis yang dibuat adalah: create, store, edit, update, destroy
-    // Route 'show' dan 'index' tidak akan dibuat karena kita mengecualikannya dengan ->except()
+    // Kelola Mahasiswa
+    Route::get('/dashboard-admin/kelola-mahasiswa', [StudentController::class, 'index'])->name('students.index');
+    Route::get('/dashboard-admin/kelola-mahasiswa/create', [StudentController::class, 'create'])->name('students.create');
+    Route::post('/dashboard-admin/kelola-mahasiswa', [StudentController::class, 'store'])->name('students.store');
+    Route::get('/dashboard-admin/kelola-mahasiswa/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
+    Route::put('/dashboard-admin/kelola-mahasiswa/{student}', [StudentController::class, 'update'])->name('students.update');
+    Route::delete('/dashboard-admin/kelola-mahasiswa/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 
+    // Kelola Course
+    Route::get('/dashboard-admin/kelola-course', [CourseController::class, 'index'])->name('courses.index');
+    Route::get('/dashboard-admin/kelola-course/create', [CourseController::class, 'create'])->name('courses.create');
+    Route::post('/dashboard-admin/kelola-course', [CourseController::class, 'store'])->name('courses.store');
+    Route::get('/dashboard-admin/kelola-course/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
+    Route::put('/dashboard-admin/kelola-course/{course}', [CourseController::class, 'update'])->name('courses.update');
+    Route::delete('/dashboard-admin/kelola-course/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
 
-    // Kelola Students
-    Route::get('students/create', [StudentController::class, 'create'])->name('students.create');
-    Route::post('students', [StudentController::class, 'store'])->name('students.store');
-    Route::get('students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
-    Route::put('students/{student}', [StudentController::class, 'update'])->name('students.update');
-    Route::delete('students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 });
+
+// JS
+Route::middleware(['auth', 'role:admin'])->get('/api/students', function() {
+    return \App\Models\Student::with('user')->get();
+});
+
 
 // middleware role USER
 Route::middleware(['auth', 'role:user'])->group(function () {
 
     //dashboard
     Route::get('/dashboard-user', [DashboardUserController::class, 'dashboardUser'])->name('dashboard.user');
+    Route::get('/dashboard-user/list-courses', [CourseController::class, 'list'])->name('courses.list');
+    Route::get('/dashboard-user/my-courses', [CourseController::class, 'my'])->name('courses.my');
 
     //Enroll course
     Route::post('courses/{course}/enroll', [EnrollmentController::class, 'enroll'])->name('courses.enroll');

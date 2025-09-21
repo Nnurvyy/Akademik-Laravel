@@ -1,81 +1,44 @@
+{{-- filepath: resources/views/dashboard-user.blade.php --}}
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    {{-- ================= ALL COURSES ================= --}}
-                    <h3 class="text-xl font-semibold mt-8 mb-2">All Courses</h3>
-                    <div class="mb-2 flex items-center gap-2">
-                        <form method="GET" action="{{ route('dashboard.user') }}" class="ml-auto flex gap-2">
-                            <input type="text" name="course_search" value="{{ $courseSearch ?? '' }}" placeholder="Search courses..." class="rounded px-2 py-1 border bg-white text-black focus:ring focus:ring-blue-300" />
-                            <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded">Search</button>
-                        </form>
-                    </div>
-                    <table class="w-full mb-2 border-collapse border border-gray-300 dark:border-gray-700">
-                        <thead class="bg-gray-100 dark:bg-gray-700">
-                            <tr>
-                                @php
-                                    $courseOrderNext = $courseOrder === 'asc' ? 'desc' : 'asc';
-                                @endphp
-                                <th class="border px-2 py-1">
-                                    <a href="{{ route('dashboard.user', array_merge(request()->except('courses'), ['course_sort' => 'course_name', 'course_order' => $courseSort === 'course_name' ? $courseOrderNext : 'asc'])) }}">
-                                        Name {!! $courseSort === 'course_name' ? ($courseOrder === 'asc' ? '▲' : '▼') : '' !!}
-                                    </a>
-                                </th>
-                                <th class="border px-2 py-1">
-                                    <a href="{{ route('dashboard.user', array_merge(request()->except('courses'), ['course_sort' => 'credits', 'course_order' => $courseSort === 'credits' ? $courseOrderNext : 'asc'])) }}">
-                                        Credits {!! $courseSort === 'credits' ? ($courseOrder === 'asc' ? '▲' : '▼') : '' !!}
-                                    </a>
-                                </th>
-                                <th class="border px-2 py-1">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($courses as $course)
-                            <tr>
-                                <td class="border px-2 py-1">{{ $course->course_name }}</td>
-                                <td class="border px-2 py-1 text-center">{{ $course->credits }}</td>
-                                <td class="border px-2 py-1 flex justify-center gap-2">
-                                    @if(in_array($course->course_id, $enrolledCourseIds))
-                                        <x-secondary-button>Enrolled</x-secondary-button>
-                                    @else
-                                        <form method="POST" action="{{ route('courses.enroll', $course) }}">
-                                            @csrf
-                                            <x-primary-button>Enroll</x-primary-button>
-                                        </form>
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    {{ $courses->links() }}
-
-                    {{-- ================= MY COURSES ================= --}}
-                    <h3 class="text-xl font-semibold mt-12 mb-2">My Courses</h3>
-                    <table class="w-full mb-2 border-collapse border border-gray-300 dark:border-gray-700">
-                        <thead class="bg-gray-100 dark:bg-gray-700">
-                            <tr>
-                                <th class="border px-2 py-1">Name</th>
-                                <th class="border px-2 py-1">Credits</th>
-                                <th class="border px-2 py-1">Enroll Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($myCourses as $take)
-                                <tr>
-                                    <td class="border px-2 py-1">{{ $take->course->course_name ?? '-' }}</td>
-                                    <td class="border px-2 py-1 text-center">{{ $take->course->credits ?? '-' }}</td>
-                                    <td class="border px-2 py-1 text-center">{{ $take->enroll_date ?? '-' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    {{ $myCourses->links() }}
-
+            <div class="bg-gradient-to-r from-blue-500 to-green-500 rounded-lg shadow-lg p-8 mb-8 text-white text-center">
+                <h2 class="text-2xl font-bold mb-2">Selamat Datang di Dashboard Student Akademik!</h2>
+                <p class="text-lg">Lihat dan daftar mata kuliah yang tersedia.<br>
+                Gunakan menu navigasi di atas untuk mengakses fitur mahasiswa.</p>
+            </div>
+            
+            {{-- STATISTIC BOXES --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex flex-col items-center justify-center">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">{{ $courseCount }}</div>
+                    <div class="text-lg font-semibold text-gray-700 dark:text-gray-200">Total Mata Kuliah</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Jumlah seluruh mata kuliah yang tersedia</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex flex-col items-center justify-center">
+                    <div class="text-4xl font-bold text-green-600 mb-2">{{ $myCourseCount }}</div>
+                    <div class="text-lg font-semibold text-gray-700 dark:text-gray-200">Mata Kuliah Diambil</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Jumlah mata kuliah yang sudah kamu enroll</div>
                 </div>
             </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-2 text-blue-700 dark:text-blue-300">Tips Akademik</h3>
+                    <ul class="list-disc list-inside text-gray-600 dark:text-gray-300 text-sm">
+                        <li>Pastikan kamu mengambil mata kuliah sesuai rencana studi.</li>
+                        <li>Gunakan fitur pencarian untuk menemukan mata kuliah yang kamu minati.</li>
+                        <li>Cek jadwal dan jumlah SKS sebelum enroll.</li>
+                    </ul>
+                </div>
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-2 text-green-700 dark:text-green-300">Info Singkat</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm mb-2">Kamu dapat melihat daftar mata kuliah yang sudah diambil di menu "My Courses".</p>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">Selalu pantau pengumuman terbaru dari admin.</p>
+                </div>
+            </div>
+
         </div>
     </div>
 </x-app-layout>
