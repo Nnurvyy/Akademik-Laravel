@@ -18,4 +18,22 @@ export default {
     },
 
     plugins: [forms],
+
+    safelist: [
+        '!border-red-500',
+        'focus:!border-red-500',
+        'focus:!ring-red-500',
+        'bg-green-600',
+        'bg-red-600',
+        'bg-yellow-500',
+        'fixed',
+        'top-5',
+        'right-5',
+        'z-50',
+        'px-4',
+        'py-2',
+        'rounded',
+        'shadow',
+        'text-white'
+    ],
 };

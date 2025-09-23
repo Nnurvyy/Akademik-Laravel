@@ -9,47 +9,13 @@ use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
-    public function index(Request $request)
+    
+    public function index()
     {
-        $studentSort = $request->get('student_sort', 'username');
-        $studentOrder = $request->get('student_order', 'asc');
-        $studentSearch = $request->get('student_search');
-
-        $studentsQuery = \App\Models\Student::with('user');
-        if ($studentSearch) {
-            $studentsQuery->whereHas('user', function($q) use ($studentSearch) {
-                $q->where('username', 'like', "%$studentSearch%")
-                ->orWhere('full_name', 'like', "%$studentSearch%")
-                ->orWhere('email', 'like', "%$studentSearch%");
-            })->orWhere('entry_year', 'like', "%$studentSearch%");
-        }
-        if (in_array($studentSort, ['username', 'full_name', 'entry_year'])) {
-            if ($studentSort === 'entry_year') {
-                $studentsQuery->orderBy('entry_year', $studentOrder);
-            } else {
-                $studentsQuery->join('users', 'students.user_id', '=', 'users.user_id')
-                    ->orderBy("users.$studentSort", $studentOrder)
-                    ->select('students.*');
-            }
-        }
-        $students = $studentsQuery->paginate(10)->appends($request->except('page'));
-
-        return view('kelola-mahasiswa', compact('students', 'studentSort', 'studentOrder', 'studentSearch'));
-    }
-
-    public function create()
-    {
-        return view('students.create');
+        return view('kelola-mahasiswa');
     }
 
     public function store(Request $request){
-        $request->validate([
-            'username' => ['required', 'string', 'max:15', 'unique:users,username'],
-            'full_name' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:6'],
-            'entry_year' => ['required', 'integer'],
-        ]);
 
         $user = User::create([
             'username' => $request->username,
@@ -59,26 +25,16 @@ class StudentController extends Controller
             'role' => 'user',
         ]);
 
-        Student::create([
+        $student = Student::create([
             'user_id' => $user->user_id,
             'entry_year' => $request->entry_year,
         ]);
-        return redirect()->route('students.index')->with('status', 'student-created');
-    }
-
-    public function edit(Student $student){
-        $student->load('user');
-        return view('students.edit', compact('student'));
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(Student::with('user')->find($student->student_id));
+        }
     }
 
     public function update(Request $request, Student $student){
-        $request->validate([
-            'username' => ['required', 'string', 'max:15', 'unique:users,username,' . $student->user->user_id . ',user_id'],
-            'full_name' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $student->user->user_id . ',user_id'],
-            'password' => ['nullable', 'string', 'min:6'],
-            'entry_year' => ['required', 'integer'],
-        ]);
         // Update user
         $user = $student->user;
         $user->username = $request->username;
@@ -93,15 +49,16 @@ class StudentController extends Controller
         $student->entry_year = $request->entry_year;
         $student->save();
 
-        return redirect()->route('students.index')->with('status', 'student-updated');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(Student::with('user')->find($student->student_id));
+        }
     }
 
     public function destroy(Student $student) {
-        // Hapus user (otomatis hapus student karena ada foreign key cascade)
         $student->user->delete();
-        return redirect()->route('students.index')->with('status', 'student-deleted');
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
     }
-
-
 
 }

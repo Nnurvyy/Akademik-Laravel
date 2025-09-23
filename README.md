@@ -1,4 +1,5 @@
 # Muhammad Hasbi Hardian (241511019)
+## Mission 4
 ---
 
 # Akademik
@@ -28,6 +29,7 @@ Akademik adalah aplikasi manajemen akademik berbasis web yang dibangun menggunak
 - [PostgreSQL](https://www.postgresql.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Alpine.js](https://alpinejs.dev/)
+- [Javascript](https://www.javascript.com/)
 
 ---
 
@@ -109,3 +111,54 @@ Gunakan akun yang sudah disediakan di seeder, misal:
   Password: password123
 
 Lihat file seeder (database/seeders/StudentUserSeeder.php) untuk daftar akun student lainnya
+
+---
+
+# Screenshoot Program
+## 1. Login
+![Login](public/img/login.png)
+
+## 2. Dashboard Admin
+![Dashboard Admin](public/img/dashboard-admin.png)
+
+## 3. Dashboard Student
+![Dashboard Student](public/img/dashboard-student.png)
+
+## 4. Kelola Mahasiswa
+![Kelola Mahasiswa](public/img/kelola-students.png)
+
+### - Create Mahasiswa
+![Create Student](public/img/create-student.png)
+![Create Student Error](public/img/create-student-error.png)
+
+### - Edit Mahasiswa
+![Edit Student](public/img/edit-student.png)
+
+### - Delete Mahasiswa
+![Delete Student](public/img/delete-student.png)
+
+## 5. Kelola Mata Kuliah (Course)
+![Kelola Courses](public/img/kelola-courses.png)
+
+### - Create Course
+![Create Course](public/img/create-course.png)
+
+### - Edit Course
+![Edit Course](public/img/edit-course.png)
+
+### - Delete Course
+![Delete Course](public/img/delete-course.png)
+
+## 6. All Courses (Student)
+![All Courses](public/img/all-courses.png)
+
+## 7. My Courses (Student)
+![My Courses](public/img/my-courses.png)
+
+## 8. Profile
+![Profile 1](public/img/profile1.png)
+![Profile 2](public/img/profile2.png)
+
+## 9. Logout
+![Logout](public/img/logout.png)
+

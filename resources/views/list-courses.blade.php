@@ -6,56 +6,33 @@
 
                     {{-- ================= ALL COURSES ================= --}}
                     <h3 class="text-xl font-semibold mt-8 mb-2">All Courses</h3>
-                    <div class="mb-2 flex items-center gap-2">
-                        <form method="GET" action="{{ route('dashboard.user') }}" class="ml-auto flex gap-2">
-                            <input type="text" name="course_search" value="{{ $courseSearch ?? '' }}" placeholder="Search courses..." class="rounded px-2 py-1 border bg-white text-black focus:ring focus:ring-blue-300" />
-                            <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded">Search</button>
-                        </form>
-                    </div>
-                    <table class="w-full mb-2 border-collapse border border-gray-900 dark:border-gray-700">
+                    <table id="table-courses" class="w-full mb-2 border-collapse border border-gray-300 dark:border-gray-700">
                         <thead class="bg-gray-100 dark:bg-gray-900">
                             <tr>
-                                @php
-                                    $courseOrderNext = $courseOrder === 'asc' ? 'desc' : 'asc';
-                                @endphp
-                                <th class="border px-2 py-1">
-                                    <a href="{{ route('dashboard.user', array_merge(request()->except('courses'), ['course_sort' => 'course_name', 'course_order' => $courseSort === 'course_name' ? $courseOrderNext : 'asc'])) }}">
-                                        Name {!! $courseSort === 'course_name' ? ($courseOrder === 'asc' ? '▲' : '▼') : '' !!}
-                                    </a>
-                                </th>
-                                <th class="border px-2 py-1">
-                                    <a href="{{ route('dashboard.user', array_merge(request()->except('courses'), ['course_sort' => 'credits', 'course_order' => $courseSort === 'credits' ? $courseOrderNext : 'asc'])) }}">
-                                        Credits {!! $courseSort === 'credits' ? ($courseOrder === 'asc' ? '▲' : '▼') : '' !!}
-                                    </a>
-                                </th>
-                                <th class="border px-2 py-1">Action</th>
+                                <th class="border px-2 py-1 text-center">No</th>
+                                <th class="border px-2 py-1 text-center">Course Name</th>
+                                <th class="border px-2 py-1 text-center">Credits</th>
+                                <th class="border px-2 py-1 text-center">Status</th>
+                                <th class="border px-2 py-1 text-center">Enroll</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($courses as $course)
-                            <tr>
-                                <td class="border px-2 py-1">{{ $course->course_name }}</td>
-                                <td class="border px-2 py-1 text-center">{{ $course->credits }}</td>
-                                <td class="border px-2 py-1 flex justify-center gap-2">
-                                    @if(in_array($course->course_id, $enrolledCourseIds))
-                                        <x-secondary-button>Enrolled</x-secondary-button>
-                                    @else
-                                        <form method="POST" action="{{ route('courses.enroll', $course) }}">
-                                            @csrf
-                                            <x-primary-button>Enroll</x-primary-button>
-                                        </form>
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
+                            {{-- Data diisi oleh JS --}}
                         </tbody>
                     </table>
-                    {{ $courses->links() }}
 
-        
+                    <!-- Total SKS -->
+                    <div id="total-credits" class="mt-2 font-semibold text-gray-700 dark:text-gray-300">
+                        Total Credits Selected: 0
+                    </div>
+
+                    <button id="submit-enroll" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Submit Enroll</button>
 
                 </div>
             </div>
         </div>
     </div>
+    @push('scripts')
+        <script src="{{ asset('js/all-course.js') }}"></script>
+    @endpush
 </x-app-layout>
